@@ -1,0 +1,102 @@
+name: HELIOS Integration Contract
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - ".github/copilot-instructions.md"
+      - "config/integrations/**"
+      - "docs/COMMUNICATION_FABRIC.md"
+      - ".github/workflows/integration-contract.yml"
+  push:
+    branches: [main]
+    paths:
+      - "config/integrations/**"
+      - "docs/COMMUNICATION_FABRIC.md"
+  workflow_dispatch:
+    inputs:
+      event_type:
+        description: Event type for a sample contract artifact
+        required: false
+        default: integration.contract.test
+
+permissions:
+  contents: read
+
+jobs:
+  validate-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate repository map and schema JSON
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          required = [
+              Path("config/integrations/repositories.json"),
+              Path("config/integrations/event-contract.schema.json"),
+          ]
+          for path in required:
+              with path.open("r", encoding="utf-8") as handle:
+                  value = json.load(handle)
+              if not isinstance(value, dict):
+                  raise SystemExit(f"{path} must contain a JSON object")
+
+          repo_map = json.loads(required[0].read_text(encoding="utf-8"))
+          names = {entry["name"] for entry in repo_map["repositories"]}
+          expected = {
+              "Heli0s-Dynamics/adaptive-multibrain-bootstrap",
+              "M0nado/helios-platform",
+              "M0nado/Helios-Control-Center",
+              "M0nado/helios-ai-hub",
+              "M0nado/helios-monado-blade",
+              "Yolkster64/hermes-fleet-platforms",
+          }
+          missing = sorted(expected - names)
+          if missing:
+              raise SystemExit(f"Missing canonical repositories: {missing}")
+          print(f"Validated {len(names)} repository roles")
+          PY
+      - name: Build sample normalized event
+        shell: bash
+        env:
+          EVENT_TYPE: ${{ inputs.event_type || 'integration.contract.validation' }}
+        run: |
+          mkdir -p reports/integrations
+          python - <<'PY'
+          import json, os, uuid
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          event = {
+              "schemaVersion": "1.0",
+              "eventId": str(uuid.uuid4()),
+              "source": "github",
+              "eventType": os.environ["EVENT_TYPE"],
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "entityId": os.environ.get("GITHUB_RUN_ID"),
+              "correlationId": f"github-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}",
+              "causationId": None,
+              "environment": "development",
+              "occurredAt": datetime.now(timezone.utc).isoformat(),
+              "dataClassification": "internal",
+              "actor": {"type": "workflow", "id": "github-actions", "displayName": "HELIOS Integration Contract"},
+              "links": [{"rel": "run", "href": f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"}],
+              "payload": {"sha": os.environ["GITHUB_SHA"], "ref": os.environ["GITHUB_REF"]},
+          }
+          Path("reports/integrations/sample-event.json").write_text(json.dumps(event, indent=2) + "\n", encoding="utf-8")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: helios-integration-contract
+          path: |
+            config/integrations/repositories.json
+            config/integrations/event-contract.schema.json
+            reports/integrations/sample-event.json
+          retention-days: 14
