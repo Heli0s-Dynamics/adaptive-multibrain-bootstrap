@@ -1,6 +1,5 @@
 import importlib.util
-import json
-import tempfile
+import sys
 import unittest
 from pathlib import Path
 
@@ -8,6 +7,7 @@ MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "fleet_runtime.p
 SPEC = importlib.util.spec_from_file_location("fleet_runtime", MODULE_PATH)
 assert SPEC and SPEC.loader
 fleet_runtime = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = fleet_runtime
 SPEC.loader.exec_module(fleet_runtime)
 
 
