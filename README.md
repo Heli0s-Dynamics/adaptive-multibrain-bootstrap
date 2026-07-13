@@ -1,42 +1,33 @@
 # Adaptive Multibrain Bootstrap
 
-Central control-plane repository for JP's combined AI/software/cloud/local development stack.
+GitHub-first control plane for the HELIOS / XTier workstation, Azure platform, Copilot/Codex collaboration, and the Hermes/XCore agent fleet.
 
-This repo is the project spine for bringing together:
+## Foundation now in this repository
 
-- GitHub, GitHub CLI, GitHub Actions, Codespaces, and repository automation
-- OpenAI Codex / ChatGPT-assisted development workflows
-- Microsoft Copilot, Microsoft 365, Copilot Studio, Copilot Designer, Power Apps, Power BI, and Fabric
-- Azure CLI, Azure resources, Azure AI Foundry, containers, identity, storage, and monitoring
-- Local Windows workstation workflows, secure profiles, VHDX vaults, scripts, and dev environments
-- Optional external AI collaborators such as Claude, Gemini, and other model/agent layers
+- bounded Hermes/XCore learning and pruning runtime
+- pull-request-only fleet state updates
+- GitHub Copilot repository instructions
+- Codex project sandbox and agent boundaries
+- CI tests and secret scanning
+- Azure OIDC what-if workflow
+- subscription-scope Bicep resource-group baseline
 
-## Mission
+## Safety model
 
-Build one clear, modular project system instead of scattered tools. The repo should become the place where local setup, cloud setup, AI agent workflows, documentation, and deployment automation all meet.
+Agents may evaluate, learn, prune, write reports, create branches, and open pull requests. They may not push directly to `main`, deploy Azure from the learning workflow, format disks, alter BitLocker, or write plaintext secrets.
 
-## Current Phase
+## Start locally
 
-Phase 0: Project spine and architecture map.
+```powershell
+python -m unittest discover -s tests -v
+python scripts/fleet_runtime.py --cycles 8 --seed 64
+```
 
-Before building production code, this repo should define:
+## Start in GitHub
 
-1. What systems exist.
-2. What each system is responsible for.
-3. How local tools connect to cloud tools.
-4. How AI assistants are allowed to operate.
-5. How secrets, credentials, repositories, environments, and deployments are protected.
+1. Merge the foundation pull request after CI passes.
+2. Open **Actions → Hermes XCore Learning → Run workflow**.
+3. Review the generated fleet-state pull request.
+4. Configure the Azure OIDC variables described in `docs/ACTIVATION.md` before running Azure what-if.
 
-## Primary Repositories Found
-
-- `Heli0s-Dynamics/adaptive-multibrain-bootstrap` — new control-plane/bootstrap repo.
-- `Yolkster64/trading-platform-api` — larger existing repo candidate for trading/platform API work.
-
-## Immediate Next Steps
-
-1. Fill out `/docs/PROJECT_CONTROL_PLANE.md`.
-2. Fill out `/docs/SYSTEM_ARCHITECTURE.md`.
-3. Add local bootstrap scripts under `/scripts/local`.
-4. Add Azure bootstrap scripts under `/scripts/azure`.
-5. Add GitHub/Codespaces setup under `/.devcontainer` and `/.github/workflows`.
-6. Decide whether existing code belongs here or stays in separate product repos.
+The larger workstation, GUI, DevDrive, Microsoft 365, Intune, Purview, Foundry, and installer modules remain separate approval-gated phases.
