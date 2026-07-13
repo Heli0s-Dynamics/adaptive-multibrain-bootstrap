@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "agents": [
+    {"name": "Hermes", "role": "learner-router", "maxActive": 16, "initialScore": 0.72},
+    {"name": "XCore", "role": "evaluator-pruner", "maxActive": 10, "initialScore": 0.78},
+    {"name": "Guardian", "role": "policy-gate", "maxActive": 2, "initialScore": 0.90}
+  ],
+  "taskFamilies": ["repository", "dotnet", "python", "azure", "security", "documentation"]
+}

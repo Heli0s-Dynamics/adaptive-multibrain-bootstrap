@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "maxCycles": 32,
+  "learningRate": 0.18,
+  "minimumScore": 0.35,
+  "pruneBelow": 0.42,
+  "maximumMemories": 128,
+  "maximumStateFiles": 8,
+  "allowedPersistentPaths": [
+    "state/aihub/learning-state.json",
+    "state/aihub/learning-report.json",
+    "state/aihub/evaluation-report.json",
+    "state/aihub/pruning-report.json",
+    "state/aihub/curated-memory.json"
+  ],
+  "forbiddenCapabilities": [
+    "direct-main-write",
+    "azure-deploy",
+    "secret-export",
+    "disk-format",
+    "bitlocker-change"
+  ]
+}

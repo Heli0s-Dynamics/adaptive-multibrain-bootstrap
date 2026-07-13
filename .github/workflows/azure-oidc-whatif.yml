@@ -1,0 +1,36 @@
+name: Azure OIDC What-If
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options: [dev, test, prod]
+        default: dev
+      location:
+        default: eastus2
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  what-if:
+    runs-on: ubuntu-latest
+    environment: azure-${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Compile Bicep
+        run: az bicep build --file infra/bicep/main.bicep
+      - name: Subscription what-if only
+        run: |
+          az deployment sub what-if \
+            --name "helios-${{ inputs.environment }}-${{ github.run_id }}" \
+            --location "${{ inputs.location }}" \
+            --template-file infra/bicep/main.bicep \
+            --parameters environment="${{ inputs.environment }}" location="${{ inputs.location }}"

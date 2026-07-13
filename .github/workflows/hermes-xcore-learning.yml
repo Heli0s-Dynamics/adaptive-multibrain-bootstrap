@@ -1,0 +1,64 @@
+name: Hermes XCore Learning
+
+on:
+  workflow_dispatch:
+    inputs:
+      cycles:
+        description: Bounded learning cycles
+        required: true
+        default: '8'
+      seed:
+        description: Deterministic seed
+        required: true
+        default: '64'
+  schedule:
+    - cron: '23 7 * * 1,4'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: hermes-xcore-learning
+  cancel-in-progress: false
+
+jobs:
+  learn-evaluate-prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+      - name: Run bounded fleet cycle
+        env:
+          CYCLES: ${{ github.event.inputs.cycles || '8' }}
+          SEED: ${{ github.event.inputs.seed || github.run_number }}
+        run: python scripts/fleet_runtime.py --cycles "$CYCLES" --seed "$SEED"
+      - name: Archive evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermes-xcore-evidence-${{ github.run_id }}
+          path: state/aihub/*.json
+          retention-days: 30
+      - name: Create review branch and pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: fleet/state-${{ github.run_id }}
+        run: |
+          if git diff --quiet -- state/aihub; then
+            echo 'No state changes.'
+            exit 0
+          fi
+          git config user.name 'helios-fleet-bot'
+          git config user.email 'helios-fleet-bot@users.noreply.github.com'
+          git switch -c "$BRANCH"
+          git add state/aihub
+          git commit -m 'chore(fleet): update bounded learning and pruning state'
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" --title 'chore(fleet): Hermes/XCore state update' --body 'Automated bounded learning, evaluation, and pruning run. Review the JSON state and workflow artifact before merging.'

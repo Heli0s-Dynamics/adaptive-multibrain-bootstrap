@@ -1,0 +1,1 @@
+Follow `AGENTS.md`. Prefer small reviewable changes, deterministic tests, no secrets, and no direct writes to `main`. Treat Hermes as the learner, XCore as evaluator/pruner, and Guardian as the final safety gate.

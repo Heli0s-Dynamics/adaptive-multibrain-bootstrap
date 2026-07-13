@@ -1,0 +1,14 @@
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+network_access = false
+allow_login_shell = false
+
+[agents]
+max_threads = 4
+max_depth = 1
+
+[limits]
+job_max_runtime_seconds = 1200
+
+[project]
+instructions = "Read AGENTS.md before changing files. Use pull-request-safe changes. Never add secrets or destructive workstation/cloud actions."
