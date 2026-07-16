@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "agent": "Hermes",
+    "cycle": 1,
+    "difficulty": 0.340024,
+    "family": "repository",
+    "learnedScore": 0.7347,
+    "score": 0.801665
+  },
+  {
+    "agent": "Hermes",
+    "cycle": 8,
+    "difficulty": 0.548409,
+    "family": "dotnet",
+    "learnedScore": 0.739665,
+    "score": 0.762011
+  },
+  {
+    "agent": "XCore",
+    "cycle": 4,
+    "difficulty": 0.686567,
+    "family": "azure",
+    "learnedScore": 0.764154,
+    "score": 0.756517
+  },
+  {
+    "agent": "Hermes",
+    "cycle": 5,
+    "difficulty": 0.312886,
+    "family": "security",
+    "learnedScore": 0.73476,
+    "score": 0.737131
+  },
+  {
+    "agent": "Hermes",
+    "cycle": 3,
+    "difficulty": 0.581942,
+    "family": "python",
+    "learnedScore": 0.734239,
+    "score": 0.732142
+  },
+  {
+    "agent": "XCore",
+    "cycle": 6,
+    "difficulty": 0.809963,
+    "family": "documentation",
+    "learnedScore": 0.753356,
+    "score": 0.704167
+  },
+  {
+    "agent": "XCore",
+    "cycle": 2,
+    "difficulty": 0.761729,
+    "family": "dotnet",
+    "learnedScore": 0.76583,
+    "score": 0.70128
+  },
+  {
+    "agent": "XCore",
+    "cycle": 7,
+    "difficulty": 0.760728,
+    "family": "repository",
+    "learnedScore": 0.738282,
+    "score": 0.669614
+  }
+]
