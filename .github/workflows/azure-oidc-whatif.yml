@@ -28,9 +28,11 @@ jobs:
       - name: Compile Bicep
         run: az bicep build --file infra/bicep/main.bicep
       - name: Subscription what-if only
+        env:
+          LOCATION: ${{ inputs.location }}
         run: |
           az deployment sub what-if \
             --name "helios-${{ inputs.environment }}-${{ github.run_id }}" \
-            --location "${{ inputs.location }}" \
+            --location "$LOCATION" \
             --template-file infra/bicep/main.bicep \
-            --parameters environment="${{ inputs.environment }}" location="${{ inputs.location }}"
+            --parameters environment="${{ inputs.environment }}" location="$LOCATION"
