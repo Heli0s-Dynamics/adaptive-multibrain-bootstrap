@@ -1,9 +1,21 @@
 {
-  "version": 1,
-  "runCount": 0,
   "agents": {
-    "Hermes": {"score": 0.72, "samples": 0},
-    "XCore": {"score": 0.78, "samples": 0},
-    "Guardian": {"score": 0.90, "samples": 0}
-  }
+    "Guardian": {
+      "samples": 0,
+      "score": 0.9
+    },
+    "Hermes": {
+      "samples": 6,
+      "score": 0.748433
+    },
+    "XCore": {
+      "samples": 2,
+      "score": 0.758845
+    }
+  },
+  "lastCycles": 8,
+  "lastSeed": 7,
+  "runCount": 1,
+  "updatedAt": "2026-08-06T10:04:51.015858+00:00",
+  "version": 1
 }
