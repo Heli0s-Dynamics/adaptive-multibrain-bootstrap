@@ -1,1 +1,71 @@
-{"status":"not-run"}
+{
+  "cycles": 8,
+  "meanScore": 0.73717,
+  "results": [
+    {
+      "agent": "XCore",
+      "cycle": 1,
+      "difficulty": 0.667344,
+      "family": "repository",
+      "learnedScore": 0.776433,
+      "score": 0.760186
+    },
+    {
+      "agent": "XCore",
+      "cycle": 2,
+      "difficulty": 0.78278,
+      "family": "dotnet",
+      "learnedScore": 0.773216,
+      "score": 0.758563
+    },
+    {
+      "agent": "XCore",
+      "cycle": 3,
+      "difficulty": 0.745732,
+      "family": "python",
+      "learnedScore": 0.771123,
+      "score": 0.761586
+    },
+    {
+      "agent": "Hermes",
+      "cycle": 4,
+      "difficulty": 0.269434,
+      "family": "azure",
+      "learnedScore": 0.730547,
+      "score": 0.778597
+    },
+    {
+      "agent": "XCore",
+      "cycle": 5,
+      "difficulty": 0.882049,
+      "family": "security",
+      "learnedScore": 0.760924,
+      "score": 0.714462
+    },
+    {
+      "agent": "XCore",
+      "cycle": 6,
+      "difficulty": 0.853603,
+      "family": "documentation",
+      "learnedScore": 0.744076,
+      "score": 0.667326
+    },
+    {
+      "agent": "Hermes",
+      "cycle": 7,
+      "difficulty": 0.564276,
+      "family": "repository",
+      "learnedScore": 0.727801,
+      "score": 0.715293
+    },
+    {
+      "agent": "XCore",
+      "cycle": 8,
+      "difficulty": 0.61432,
+      "family": "dotnet",
+      "learnedScore": 0.743585,
+      "score": 0.741349
+    }
+  ],
+  "seed": 5
+}
