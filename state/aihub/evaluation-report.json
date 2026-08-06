@@ -1,1 +1,14 @@
-{"status":"not-run"}
+{
+  "cycles": 8,
+  "forbiddenCapabilities": [
+    "direct-main-write",
+    "azure-deploy",
+    "secret-export",
+    "disk-format",
+    "bitlocker-change"
+  ],
+  "maximumScore": 0.77917,
+  "meanScore": 0.747762,
+  "minimumScore": 0.696939,
+  "passed": true
+}
