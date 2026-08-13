@@ -46,6 +46,7 @@ jobs:
       - name: Compile Bicep without Azure authentication
         run: |
           set -euo pipefail
+          az bicep install --version v0.46.1
           az bicep version
           az bicep build --file infra/bicep/main.bicep --outfile "$RUNNER_TEMP/bootstrap.json"
           az bicep build --file infra/bicep/aihub/main.bicep --outfile "$RUNNER_TEMP/aihub.json"
