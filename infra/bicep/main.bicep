@@ -27,4 +27,4 @@ resource resourceGroups 'Microsoft.Resources/resourceGroups@2024-03-01' = [for n
   }
 }]
 
-output resourceGroupNames array = [for group in resourceGroups: group.name]
+output resourceGroupNames array = [for name in groups: 'rg-${name}']
