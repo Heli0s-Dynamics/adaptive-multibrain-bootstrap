@@ -2,13 +2,6 @@ name: Azure OIDC What-If
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        options: [dev, test, prod]
-        default: dev
-      location:
-        default: eastus2
 
 permissions:
   contents: read
@@ -16,21 +9,90 @@ permissions:
 
 jobs:
   what-if:
-    runs-on: ubuntu-latest
-    environment: azure-${{ inputs.environment }}
+    if: github.ref == 'refs/heads/main' && vars.AZURE_WHATIF_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: azure-dev
+    env:
+      HELIOS_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: azure/login@v2
+      - name: Check out reviewed main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Validate fixed target input
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$HELIOS_RESOURCE_GROUP" =~ ^[A-Za-z0-9._-]{1,90}$ ]]; then
+            echo 'AZURE_RESOURCE_GROUP is missing or invalid.' >&2
+            exit 1
+          fi
+
+      - name: Sign in with protected-environment OIDC
+        uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5 # v2.3.0
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - name: Compile Bicep
-        run: az bicep build --file infra/bicep/main.bicep
-      - name: Subscription what-if only
+
+      - name: Compile exact template
         run: |
-          az deployment sub what-if \
-            --name "helios-${{ inputs.environment }}-${{ github.run_id }}" \
-            --location "${{ inputs.location }}" \
-            --template-file infra/bicep/main.bicep \
-            --parameters environment="${{ inputs.environment }}" location="${{ inputs.location }}"
+          set -euo pipefail
+          az bicep version
+          az bicep build \
+            --file infra/bicep/aihub/main.bicep \
+            --outfile "$RUNNER_TEMP/aihub.json"
+
+      - name: Resource-group what-if only
+        run: |
+          set -euo pipefail
+          az group show --name "$HELIOS_RESOURCE_GROUP" --only-show-errors >/dev/null
+          az deployment group what-if \
+            --name "helios-aihub-dev-${GITHUB_RUN_ID}" \
+            --resource-group "$HELIOS_RESOURCE_GROUP" \
+            --template-file "$RUNNER_TEMP/aihub.json" \
+            --parameters environment=dev \
+            --result-format FullResourcePayloads \
+            --no-pretty-print \
+            --only-show-errors > "$RUNNER_TEMP/what-if.raw.json"
+
+      - name: Redact plan evidence
+        env:
+          RAW_PLAN: ${{ runner.temp }}/what-if.raw.json
+          SAFE_PLAN: ${{ runner.temp }}/what-if.sanitized.json
+        shell: python
+        run: |
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          guid = re.compile(r'(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
+          sensitive_name = re.compile(r'(?i)(secret|password|token|credential|connectionstring)')
+
+          def clean(value, key=''):
+              if sensitive_name.search(key):
+                  return '<redacted>'
+              if isinstance(value, dict):
+                  return {k: clean(v, k) for k, v in value.items()}
+              if isinstance(value, list):
+                  return [clean(v, key) for v in value]
+              if isinstance(value, str):
+                  return guid.sub('<guid>', value)
+              return value
+
+          source = json.loads(Path(os.environ['RAW_PLAN']).read_text(encoding='utf-8'))
+          Path(os.environ['SAFE_PLAN']).write_text(
+              json.dumps(clean(source), sort_keys=True, indent=2) + '\n',
+              encoding='utf-8',
+          )
+
+      - name: Upload sanitized what-if evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: aihub-what-if-sanitized
+          path: ${{ runner.temp }}/what-if.sanitized.json
+          if-no-files-found: error
+          retention-days: 7

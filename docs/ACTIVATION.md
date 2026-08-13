@@ -11,22 +11,43 @@
 
 ## Azure OIDC
 
-Create a user-assigned managed identity or Entra application with a federated credential matching this repository and the protected environment.
+Pull requests run unauthenticated Bicep compilation only. They receive no OIDC
+token, Azure identifiers, provider keys, or service connection.
 
-Create GitHub environments:
+Before anyone can run the manual AIHub resource-group what-if:
 
-- `azure-dev`
-- `azure-test`
-- `azure-prod`
+1. Create the `azure-dev` GitHub environment manually and add required reviewers,
+   branch control for `main`, and an appropriate wait/approval policy. Do not rely
+   on workflow execution to auto-create an unprotected environment.
+2. Create a user-assigned managed identity or Entra application with a federated
+   credential that exactly matches this repository and `azure-dev` environment.
+3. Set these environment variables (not secrets):
 
-Set environment variables, not secrets:
+   - `AZURE_CLIENT_ID`
+   - `AZURE_TENANT_ID`
+   - `AZURE_SUBSCRIPTION_ID`
+   - `AZURE_RESOURCE_GROUP` (one exact pre-existing dev resource group)
 
-- `AZURE_CLIENT_ID`
-- `AZURE_TENANT_ID`
-- `AZURE_SUBSCRIPTION_ID`
+4. Grant only the existing resource-group scope needed for ARM what-if. ARM
+   what-if requires deployment-capable permissions, so restrict the identity to
+   this fixed reviewed workflow and environment; never expose it to pull requests
+   or arbitrary pipelines.
+5. Only after the protected environment and variables are verified, set the
+   repository variable `AZURE_WHATIF_ENABLED=true`.
+6. Dispatch **Azure OIDC What-If** from `main`. Review the seven-day sanitized
+   artifact. The workflow has no deployment command.
 
-Grant the identity only the scope required for the environment. Run **Azure OIDC What-If** before creating a separate approved deployment workflow.
+`infra/bicep/aihub/main.bicep` describes only an AIHub managed identity and private,
+RBAC-enabled Key Vault. Networking, role assignments, federation, secret values,
+compute, Foundry resources, and deployment are separate reviewed phases. Once the
+vault has public access disabled, data-plane access requires an approved private
+endpoint/DNS path and a trusted VNet-connected operator.
+
+A deployment requires a separate protected workflow and explicit approval. Do not
+add `az deployment * create` to the what-if workflow.
 
 ## Copilot and Codex
 
-Copilot reads `.github/copilot-instructions.md`. Codex reads `.codex/config.toml` and `AGENTS.md`. Both are prohibited from direct-main writes, secrets, disk formatting, BitLocker changes, or Azure deployment through the learning workflow.
+Copilot reads `.github/copilot-instructions.md`. Codex reads `.codex/config.toml`
+and `AGENTS.md`. Both are prohibited from direct-main writes, secrets, disk
+formatting, BitLocker changes, or Azure deployment through the learning workflow.
