@@ -5,17 +5,17 @@
       "score": 0.9
     },
     "Hermes": {
-      "samples": 2,
-      "score": 0.727801
+      "samples": 6,
+      "score": 0.755884
     },
     "XCore": {
-      "samples": 6,
-      "score": 0.743585
+      "samples": 10,
+      "score": 0.717665
     }
   },
   "lastCycles": 8,
-  "lastSeed": 5,
-  "runCount": 1,
-  "updatedAt": "2026-07-30T09:56:00.117257+00:00",
+  "lastSeed": 9,
+  "runCount": 2,
+  "updatedAt": "2026-08-13T08:48:29.710272+00:00",
   "version": 1
 }
