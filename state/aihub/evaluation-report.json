@@ -7,8 +7,8 @@
     "disk-format",
     "bitlocker-change"
   ],
-  "maximumScore": 0.778597,
-  "meanScore": 0.73717,
-  "minimumScore": 0.667326,
+  "maximumScore": 0.827204,
+  "meanScore": 0.750799,
+  "minimumScore": 0.676666,
   "passed": true
 }
