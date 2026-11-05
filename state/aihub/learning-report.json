@@ -1,71 +1,71 @@
 {
   "cycles": 8,
-  "meanScore": 0.73717,
+  "meanScore": 0.72216,
   "results": [
     {
       "agent": "XCore",
       "cycle": 1,
-      "difficulty": 0.667344,
+      "difficulty": 0.63212,
       "family": "repository",
-      "learnedScore": 0.776433,
-      "score": 0.760186
+      "learnedScore": 0.743584,
+      "score": 0.743581
     },
     {
       "agent": "XCore",
       "cycle": 2,
-      "difficulty": 0.78278,
+      "difficulty": 0.797393,
       "family": "dotnet",
-      "learnedScore": 0.773216,
-      "score": 0.758563
+      "learnedScore": 0.733073,
+      "score": 0.685192
     },
     {
       "agent": "XCore",
       "cycle": 3,
-      "difficulty": 0.745732,
+      "difficulty": 0.686746,
       "family": "python",
-      "learnedScore": 0.771123,
-      "score": 0.761586
+      "learnedScore": 0.736937,
+      "score": 0.754538
     },
     {
-      "agent": "Hermes",
+      "agent": "XCore",
       "cycle": 4,
-      "difficulty": 0.269434,
+      "difficulty": 0.858915,
       "family": "azure",
-      "learnedScore": 0.730547,
-      "score": 0.778597
+      "learnedScore": 0.723974,
+      "score": 0.664918
     },
     {
       "agent": "XCore",
       "cycle": 5,
-      "difficulty": 0.882049,
+      "difficulty": 0.686657,
       "family": "security",
-      "learnedScore": 0.760924,
-      "score": 0.714462
+      "learnedScore": 0.724487,
+      "score": 0.726827
     },
     {
       "agent": "XCore",
       "cycle": 6,
-      "difficulty": 0.853603,
+      "difficulty": 0.587274,
       "family": "documentation",
-      "learnedScore": 0.744076,
-      "score": 0.667326
+      "learnedScore": 0.733457,
+      "score": 0.77432
     },
     {
-      "agent": "Hermes",
+      "agent": "XCore",
       "cycle": 7,
-      "difficulty": 0.564276,
+      "difficulty": 0.603938,
       "family": "repository",
-      "learnedScore": 0.727801,
-      "score": 0.715293
+      "learnedScore": 0.732442,
+      "score": 0.727818
     },
     {
       "agent": "XCore",
       "cycle": 8,
-      "difficulty": 0.61432,
+      "difficulty": 0.882186,
       "family": "dotnet",
-      "learnedScore": 0.743585,
-      "score": 0.741349
+      "learnedScore": 0.726618,
+      "score": 0.700086
     }
   ],
-  "seed": 5
+  "seed": 33
 }
